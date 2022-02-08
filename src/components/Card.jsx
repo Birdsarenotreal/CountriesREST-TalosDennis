@@ -3,11 +3,12 @@ import React from "react";
 export default function Card(props) {
   const cardItem = {
     name: props.name,
-    capital: props.capital,
+    capital: props.capital && props.capital[0],
     region: props.region,
     population: props.population,
     flagImg: props.flagImg,
   };
+
   return (
     <div className="card">
       <img className="card-img-top" src={cardItem.flagImg} alt="" />
