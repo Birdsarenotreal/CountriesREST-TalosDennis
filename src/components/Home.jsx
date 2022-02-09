@@ -3,6 +3,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import CardGroup from "./CardGroup";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Modal from "react-bootstrap/Modal";
 
 export default function Home() {
   const [cards, setCards] = useState([]);
@@ -21,15 +22,14 @@ export default function Home() {
   const [show, setShow] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
   const onChangeMin = (e) => {
     setMin(e.target.value);
   };
 
   const onChangeMax = (e) => {
     setMax(e.target.value);
+    console.log(selectedCard);
+    console.log(show);
   };
 
   const onChangeSearchTerm = (e) => {
@@ -186,7 +186,7 @@ export default function Home() {
         sf3={onChangeF3}
         sf4={onChangeF4}
       ></NavFilters>
-      {show && <Modal card={selectedCard}></Modal>}
+      <CardModal card={selectedCard} show={show} close={setShow}></CardModal>
       <Search value={searchTerm} onChangeHandler={onChangeSearchTerm}></Search>
       {filterItems.length <= 0 && <h3 className="h3 m-3">No country found!</h3>}
       {filterItems.length > 0 && (
@@ -327,23 +327,25 @@ const NavFilters = (props) => {
   );
 };
 
-const Modal = (props) => {
+const CardModal = (props) => {
   return (
-    <div className="modal" tabIndex="-1" role="dialog">
-      <div className="modal-dialog" role="document">
-        <div className="card">
-          <img className="card-img-top" src={""} alt="" />
-          <div className="card-body">
-            <h5 className="card-title">{""}</h5>
-            <p className="card-text">Capital : {""}</p>
-            <p className="card-text">Region : {""}</p>
-            <p className="card-text">Population : {""}</p>
-            <a href="#" className="btn btn-primary">
-              Go somewhere
-            </a>
-          </div>
+    <Modal show={props.show}>
+      <div className="card">
+        <img className="card-img-top" src={""} alt="" />
+        <div className="card-body">
+          <h5 className="card-title">{""}</h5>
+          <p className="card-text">Capital : {""}</p>
+          <p className="card-text">Region : {""}</p>
+          <p className="card-text">Population : {""}</p>
+          <button
+            onClick={() => {
+              props.close(false);
+            }}
+          >
+            Click to close the window.
+          </button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
