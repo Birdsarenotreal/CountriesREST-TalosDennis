@@ -14,6 +14,9 @@ export default function CardGroup(props) {
           population={el.population}
           flagImg={el.flags.svg}
           area={el.area}
+          showSelected={props.show}
+          selectedCard={props.selectedCard}
+          card={el}
         ></Card>
       );
     });

@@ -8,7 +8,7 @@ export default function Card(props) {
     population: props.population,
     flagImg: props.flagImg,
   };
-
+  const card = props.card;
   return (
     <div className="card">
       <img className="card-img-top" src={cardItem.flagImg} alt="" />
@@ -17,9 +17,14 @@ export default function Card(props) {
         <p className="card-text">Capital : {cardItem.capital}</p>
         <p className="card-text">Region : {cardItem.region}</p>
         <p className="card-text">Population : {cardItem.population}</p>
-        <a href="#" className="btn btn-primary">
-          Go somewhere
-        </a>
+        <button
+          onClick={() => {
+            props.showSelected(true);
+            props.selectedCard(card);
+          }}
+        >
+          Click for more info.
+        </button>
       </div>
     </div>
   );
