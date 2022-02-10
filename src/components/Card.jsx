@@ -18,6 +18,7 @@ export default function Card(props) {
         <p className="card-text">Region : {cardItem.region}</p>
         <p className="card-text">Population : {cardItem.population}</p>
         <button
+          className="btn btn-primary"
           onClick={() => {
             props.showSelected(true);
             props.selectedCard(card);

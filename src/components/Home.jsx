@@ -14,7 +14,7 @@ export default function Home() {
   const [timeZones, setTimeZones] = useState([]);
   const [currencies, setCurrencies] = useState([]);
   const [min, setMin] = useState(0);
-  const [max, setMax] = useState(0);
+  const [max, setMax] = useState(1000000);
   const [f1, setF1] = useState("");
   const [f2, setF2] = useState("");
   const [f3, setF3] = useState("");
@@ -28,8 +28,6 @@ export default function Home() {
 
   const onChangeMax = (e) => {
     setMax(e.target.value);
-    console.log(selectedCard);
-    console.log(show);
   };
 
   const onChangeSearchTerm = (e) => {
@@ -115,7 +113,6 @@ export default function Home() {
   };
   const compareCurrency = (a, b) => {
     let test = [];
-    console.log(a, b);
     if (a.currencies) {
       test.concat(Object.keys(a.currencies));
     }
@@ -126,15 +123,10 @@ export default function Home() {
 
   const compareLanguage = (a, b) => {
     let test = [];
-
-    if (a.languages === null || a.languages === undefined) {
-      return false;
-    } else {
+    if (a && a.languages) {
       test = Object.values(a.languages);
     }
-
     if (test.includes(b)) return true;
-    console.log(test);
     return false;
   };
 
@@ -144,8 +136,10 @@ export default function Home() {
     //   filterItems.filter((el) => compareLanguage(el.languages, f1))
     // );
     // setFilterItems(
-    //   filterItems.filter((el) => compareCurrency(el.currencies, f2))
+    // filterItems.filter((el) =>
+    //   el && el.currencies ? compareCurrency(el.currencies, f2) : null
     // );
+
     setFilterItems(
       filterItems.filter((el) => el.population >= min && el.population <= max)
     );
@@ -163,6 +157,18 @@ export default function Home() {
     loadCountries();
   }, []);
 
+  useEffect(() => {
+    loadFilters();
+  }, [cards]);
+
+  const loadFilters = () => {
+    if (cards && cards.length > 0) {
+      popLang();
+      popMoney();
+      popReg();
+      popTime();
+    }
+  };
   return (
     <div className="container py-2">
       <NavFilters
@@ -254,7 +260,11 @@ const NavFilters = (props) => {
         </select>
       </div>
       <div className="col-2">
-        <select className="custom-select" id="inputGroupSelect04">
+        <select
+          className="custom-select"
+          id="inputGroupSelect04"
+          onChange={props.sf1}
+        >
           {props.languages.map((el) => {
             return (
               <option placeholder="Select language." value={el} key={el}>
@@ -300,7 +310,7 @@ const NavFilters = (props) => {
           Apply filters.
         </button>
       </div>
-      <div className="col-1">
+      <div className="col-2">
         <button
           className="btn btn-primary"
           onClick={() => {
@@ -310,34 +320,51 @@ const NavFilters = (props) => {
           Reset the cards.
         </button>
       </div>
-      <div className="col-1">
-        <button
-          className="btn btn-info"
-          onClick={() => {
-            props.test();
-            props.region();
-            props.time();
-            props.money();
-          }}
-        >
-          Populate filters.
-        </button>
-      </div>
     </div>
   );
 };
 
 const CardModal = (props) => {
+  const card = props.card;
+
   return (
     <Modal show={props.show}>
-      <div className="card">
-        <img className="card-img-top" src={""} alt="" />
+      <div className="card h-100 w-100">
+        <img
+          className="card-img-top"
+          src={card && card.flags ? card.flags.svg : null}
+          alt=""
+        />
         <div className="card-body">
           <h5 className="card-title">{""}</h5>
-          <p className="card-text">Capital : {""}</p>
-          <p className="card-text">Region : {""}</p>
-          <p className="card-text">Population : {""}</p>
+          <p className="card-text">
+            Name : {card && card.name ? card.name.common : null}
+          </p>
+          <p className="card-text">Capital : {card.capital}</p>
+
+          <p className="card-text">Alpha 2 code : {card.cca2}</p>
+          <p className="card-text">Latitude/Longitude : {card.latlng}</p>
+          <p className="card-text">Area : {card.area}</p>
+          <p className="card-text">
+            Time Zone : {card && card.timezones ? card.timezones : null}
+          </p>
+          <p className="card-text">
+            Neighbours : {card && card.borders ? card.borders.join(", ") : null}
+          </p>
+          <p className="card-text">
+            Currencies :{" "}
+            {card && card.currencies ? Object.keys(card.currencies) : null}
+          </p>
+          <p className="card-text">
+            Languages :{" "}
+            {card && card.languages
+              ? Object.values(card.languages).join(", ")
+              : null}
+          </p>
+          <p className="card-text">Region : {card.region}</p>
+          <p className="card-text">Population : {card.population}</p>
           <button
+            className="btn btn-primary"
             onClick={() => {
               props.close(false);
             }}
